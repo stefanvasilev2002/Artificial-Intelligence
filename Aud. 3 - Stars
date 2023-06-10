@@ -1,0 +1,231 @@
+from searching_framework.utils import Problem
+from searching_framework.uninformed_search import *
+
+
+def k1(x_knight, y_knight, x_bishop, y_bishop):
+    if 0 <= x_knight - 1 < 8 \
+            and 0 <= y_knight + 2 < 8 \
+            and [x_knight - 1, y_knight + 2] != [x_bishop, y_bishop]:
+        x_knight -= 1
+        y_knight += 2
+    return x_knight, y_knight
+
+
+def k2(x_knight, y_knight, x_bishop, y_bishop):
+    if 0 <= x_knight + 1 < 8 \
+            and 0 <= y_knight + 2 < 8 \
+            and [x_knight + 1, y_knight + 2] != [x_bishop, y_bishop]:
+        x_knight += 1
+        y_knight += 2
+    return x_knight, y_knight
+
+
+def k3(x_knight, y_knight, x_bishop, y_bishop):
+    if 0 <= x_knight + 2 < 8 \
+            and 0 <= y_knight + 1 < 8 \
+            and [x_knight + 2, y_knight + 1] != [x_bishop, y_bishop]:
+        x_knight += 2
+        y_knight += 1
+    return x_knight, y_knight
+
+
+def k4(x_knight, y_knight, x_bishop, y_bishop):
+    if 0 <= x_knight + 2 < 8 \
+            and 0 <= y_knight - 1 < 8 \
+            and [x_knight + 2, y_knight - 1] != [x_bishop, y_bishop]:
+        x_knight += 2
+        y_knight -= 1
+    return x_knight, y_knight
+
+
+def k5(x_knight, y_knight, x_bishop, y_bishop):
+    if 0 <= x_knight + 1 < 8 \
+            and 0 <= y_knight - 2 < 8 \
+            and [x_knight + 1, y_knight - 2] != [x_bishop, y_bishop]:
+        x_knight += 1
+        y_knight -= 2
+    return x_knight, y_knight
+
+
+def k6(x_knight, y_knight, x_bishop, y_bishop):
+    if 0 <= x_knight - 1 < 8 \
+            and 0 <= y_knight - 2 < 8 \
+            and [x_knight - 1, y_knight - 2] != [x_bishop, y_bishop]:
+        x_knight -= 1
+        y_knight -= 2
+    return x_knight, y_knight
+
+
+def k7(x_knight, y_knight, x_bishop, y_bishop):
+    if 0 <= x_knight - 2 < 8 \
+            and 0 <= y_knight - 1 < 8 \
+            and [x_knight - 2, y_knight - 1] != [x_bishop, y_bishop]:
+        x_knight -= 2
+        y_knight -= 1
+    return x_knight, y_knight
+
+
+def k8(x_knight, y_knight, x_bishop, y_bishop):
+    if 0 <= x_knight - 2 < 8 \
+            and 0 <= y_knight + 1 < 8 \
+            and [x_knight - 2, y_knight + 1] != [x_bishop, y_bishop]:
+        x_knight -= 2
+        y_knight += 1
+    return x_knight, y_knight
+
+
+def b1(x_knight, y_knight, x_bishop, y_bishop):
+    if 0 <= x_bishop - 1 < 8 \
+            and 0 <= y_bishop + 1 < 8 \
+            and [x_bishop - 1, y_bishop + 1] != [x_knight, y_knight]:
+        x_bishop -= 1
+        y_bishop += 1
+    return x_bishop, y_bishop
+
+
+def b2(x_knight, y_knight, x_bishop, y_bishop):
+    if 0 <= x_bishop + 1 < 8 \
+            and 0 <= y_bishop + 1 < 8 \
+            and [x_bishop + 1, y_bishop + 1] != [x_knight, y_knight]:
+        x_bishop += 1
+        y_bishop += 1
+    return x_bishop, y_bishop
+
+
+def b3(x_knight, y_knight, x_bishop, y_bishop):
+    if 0 <= x_bishop - 1 < 8 \
+            and 0 <= y_bishop - 1 < 8 \
+            and [x_bishop - 1, y_bishop - 1] != [x_knight, y_knight]:
+        x_bishop -= 1
+        y_bishop -= 1
+    return x_bishop, y_bishop
+
+
+def b4(x_knight, y_knight, x_bishop, y_bishop):
+    if 0 <= x_bishop + 1 < 8 \
+            and 0 <= y_bishop - 1 < 8 \
+            and [x_bishop + 1, y_bishop - 1] != [x_knight, y_knight]:
+        x_bishop += 1
+        y_bishop -= 1
+    return x_bishop, y_bishop
+
+
+class Stars(Problem):
+    def __init__(self, initial, goal=None):
+        super().__init__(initial, goal)
+        self.grid_size = [8, 8]
+
+    def successor(self, state):
+        """За дадена состојба, врати речник од парови {акција : состојба}
+        достапни од оваа состојба. Ако има многу следбеници, употребете
+        итератор кој би ги генерирал следбениците еден по еден, наместо да
+        ги генерирате сите одеднаш.
+        :param state: дадена состојба
+        :return:  речник од парови {акција : состојба} достапни од оваа
+                  состојба
+        :rtype: dict
+        """
+        successors = dict()
+
+        x_knight, y_knight = state[0], state[1]
+        x_bishop, y_bishop = state[2], state[3]
+        stars_now = state[4]
+
+        # Knight
+        new_x, new_y = k1(x_knight, y_knight, x_bishop, y_bishop)
+        if [new_x, new_y] != [x_knight, y_knight]:
+            successors['K1'] = (new_x, new_y, x_bishop, y_bishop,
+                                tuple([s for s in stars_now if s[0] != new_x or s[1] != new_y]))
+
+        new_x, new_y = k2(x_knight, y_knight, x_bishop, y_bishop)
+        if [new_x, new_y] != [x_knight, y_knight]:
+            successors['K2'] = (new_x, new_y, x_bishop, y_bishop,
+                                tuple([s for s in stars_now if s[0] != new_x or s[1] != new_y]))
+
+        new_x, new_y = k3(x_knight, y_knight, x_bishop, y_bishop)
+        if [new_x, new_y] != [x_knight, y_knight]:
+            successors['K3'] = (new_x, new_y, x_bishop, y_bishop,
+                                tuple([s for s in stars_now if s[0] != new_x or s[1] != new_y]))
+
+        new_x, new_y = k4(x_knight, y_knight, x_bishop, y_bishop)
+        if [new_x, new_y] != [x_knight, y_knight]:
+            successors['K4'] = (new_x, new_y, x_bishop, y_bishop,
+                                tuple([s for s in stars_now if s[0] != new_x or s[1] != new_y]))
+
+        new_x, new_y = k5(x_knight, y_knight, x_bishop, y_bishop)
+        if [new_x, new_y] != [x_knight, y_knight]:
+            successors['K5'] = (new_x, new_y, x_bishop, y_bishop,
+                                tuple([s for s in stars_now if s[0] != new_x or s[1] != new_y]))
+
+        new_x, new_y = k6(x_knight, y_knight, x_bishop, y_bishop)
+        if [new_x, new_y] != [x_knight, y_knight]:
+            successors['K6'] = (new_x, new_y, x_bishop, y_bishop,
+                                tuple([s for s in stars_now if s[0] != new_x or s[1] != new_y]))
+
+        new_x, new_y = k7(x_knight, y_knight, x_bishop, y_bishop)
+        if [new_x, new_y] != [x_knight, y_knight]:
+            successors['K7'] = (new_x, new_y, x_bishop, y_bishop,
+                                tuple([s for s in stars_now if s[0] != new_x or s[1] != new_y]))
+
+        new_x, new_y = k8(x_knight, y_knight, x_bishop, y_bishop)
+        if [new_x, new_y] != [x_knight, y_knight]:
+            successors['K8'] = (new_x, new_y, x_bishop, y_bishop,
+                                tuple([s for s in stars_now if s[0] != new_x or s[1] != new_y]))
+
+        # Bishop
+        new_x, new_y = b1(x_knight, y_knight, x_bishop, y_bishop)
+        if [new_x, new_y] != [x_bishop, y_bishop]:
+            successors['B1'] = (x_knight, y_knight, new_x, new_y,
+                                tuple([s for s in stars_now if s[0] != new_x or s[1] != new_y]))
+        new_x, new_y = b2(x_knight, y_knight, x_bishop, y_bishop)
+        if [new_x, new_y] != [x_bishop, y_bishop]:
+            successors['B2'] = (x_knight, y_knight, new_x, new_y,
+                                tuple([s for s in stars_now if s[0] != new_x or s[1] != new_y]))
+        new_x, new_y = b3(x_knight, y_knight, x_bishop, y_bishop)
+        if [new_x, new_y] != [x_bishop, y_bishop]:
+            successors['B3'] = (x_knight, y_knight, new_x, new_y,
+                                tuple([s for s in stars_now if s[0] != new_x or s[1] != new_y]))
+        new_x, new_y = b4(x_knight, y_knight, x_bishop, y_bishop)
+        if [new_x, new_y] != [x_bishop, y_bishop]:
+            successors['B4'] = (x_knight, y_knight, new_x, new_y,
+                                tuple([s for s in stars_now if s[0] != new_x or s[1] != new_y]))
+        return successors
+
+    def actions(self, state):
+        """За дадена состојба state, врати листа од сите акции што може да
+        се применат над таа состојба
+        :param state: дадена состојба
+        :return: листа на акции
+        :rtype: list
+        """
+        return self.successor(state).keys()
+
+    def result(self, state, action):
+        """За дадена состојба state и акција action, врати ја состојбата
+        што се добива со примена на акцијата над состојбата
+        :param state: дадена состојба
+        :param action: дадена акција
+        :return: резултантна состојба
+        """
+        return self.successor(state)[action]
+
+    def goal_test(self, state):
+        """Врати True ако state е целна состојба. Даденава имплементација
+        на методот директно ја споредува state со self.goal, како што е
+        специфицирана во конструкторот. Имплементирајте го овој метод ако
+        проверката со една целна состојба self.goal не е доволна.
+        :param state: дадена состојба
+        :return: дали дадената состојба е целна состојба
+        :rtype: bool
+        """
+        return len(state[4]) == 0
+
+
+if __name__ == '__main__':
+    knight = [1, 1]
+    bishop = [5, 1]
+    stars_pos = ((0, 0), (4, 3), (6, 6))
+
+    stars = Stars((knight[0], knight[1], bishop[0], bishop[1], stars_pos))
+
+    print(breadth_first_graph_search(stars))
